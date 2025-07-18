@@ -167,6 +167,12 @@ def view_students():
         tk.Label(frame, text=f"{idx+1}. {name} | {email} | Floor: {floor} | Seater: {seater}",
                  bg="#e0e7ef", fg="#2563eb", anchor="w").pack(fill="x", padx=10, pady=2)
 
+# === Logout with confirmation ===
+def logout():
+    confirm = messagebox.askyesno("Logout Confirmation", "Are you sure you want to logout?")
+    if confirm:
+        root.destroy()
+
 # === Buttons ===
 btn_frame = tk.Frame(main_frame, bg="#fff")
 btn_frame.pack(pady=20)
@@ -181,7 +187,7 @@ tk.Button(btn_frame, text="View Complaints", command=view_complaints,
           bg="#f39c12", fg="white", font=("Segoe UI", 11, "bold"), width=22, height=2).pack(pady=7, fill="x")
 tk.Button(btn_frame, text="View All Students", command=view_students,
           bg="#8e44ad", fg="white", font=("Segoe UI", 11, "bold"), width=22, height=2).pack(pady=7, fill="x")
-tk.Button(main_frame, text="Logout", command=root.destroy,
+tk.Button(main_frame, text="Logout", command=logout,
           bg="#7f8c8d", fg="white", font=("Segoe UI", 11, "bold"), width=10, height=1).pack(pady=20)
 
 root.mainloop()
