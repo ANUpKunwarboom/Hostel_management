@@ -57,6 +57,29 @@ tk.Label(main_frame, text="👨‍💼 Admin Dashboard", font=("Segoe UI", 20, "
 
 # === Features ===
 
+def send_notice():
+    win = tk.Toplevel(root)
+    win.title("Send Notice")
+    win.geometry("400x300")
+    win.configure(bg="#e0e7ef")
+    tk.Label(win, text="Title:", bg="#e0e7ef", fg="#2563eb").pack(pady=5)
+    title_var = tk.StringVar()
+    tk.Entry(win, textvariable=title_var, width=40, bg="#fff").pack()
+    tk.Label(win, text="Message:", bg="#e0e7ef", fg="#2563eb").pack(pady=5)
+    msg_var = tk.StringVar()
+    tk.Entry(win, textvariable=msg_var, width=40, bg="#fff").pack()
+    def submit():
+        t = title_var.get().strip()
+        m = msg_var.get().strip()
+        if not t or not m:
+            messagebox.showerror("Error", "Both fields are required.")
+            return
+        cur.execute("INSERT INTO notices (title, message) VALUES (?, ?)", (t, m))
+        conn.commit()
+        messagebox.showinfo("Success", "Notice sent.")
+        win.destroy()
+    tk.Button(win, text="Send", command=submit, bg="#27ae60", fg="white").pack(pady=15)
+
 def approve_leaves():
     win = tk.Toplevel(root)
     win.title("Approve Leaves")
@@ -176,7 +199,8 @@ def logout():
 # === Buttons ===
 btn_frame = tk.Frame(main_frame, bg="#fff")
 btn_frame.pack(pady=20)
-
+tk.Button(btn_frame, text="Send Notice", command=send_notice,
+           bg="#3498db", fg="white", font=("Segoe UI", 11, "bold"), width=22, height=2).pack(pady=7)
 tk.Button(btn_frame, text="Approve Leave", command=approve_leaves,
           bg="#27ae60", fg="white", font=("Segoe UI", 11, "bold"), width=22, height=2).pack(pady=7, fill="x")
 tk.Button(btn_frame, text="Assign Room", command=assign_room,
@@ -188,6 +212,6 @@ tk.Button(btn_frame, text="View Complaints", command=view_complaints,
 tk.Button(btn_frame, text="View All Students", command=view_students,
           bg="#8e44ad", fg="white", font=("Segoe UI", 11, "bold"), width=22, height=2).pack(pady=7, fill="x")
 tk.Button(main_frame, text="Logout", command=logout,
-          bg="#7f8c8d", fg="white", font=("Segoe UI", 11, "bold"), width=10, height=1).pack(pady=20)
+          bg="#7f8c8d", fg="white", font=("Segoe UI", 11, "bold"), width=10, height=1).pack(pady=10)
 
 root.mainloop()

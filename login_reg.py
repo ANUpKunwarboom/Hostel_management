@@ -35,6 +35,12 @@ cur.execute('''CREATE TABLE IF NOT EXISTS leaves (
     status TEXT DEFAULT 'Pending'
 )''')
 
+cur.execute('''CREATE TABLE IF NOT EXISTS notices (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    message TEXT
+)''')
+
 conn.commit()
 
 root = tk.Tk()
@@ -64,10 +70,8 @@ def draw_gradient(canvas, color1, color2):
 canvas = tk.Canvas(root, width=screen_width, height=screen_height, highlightthickness=0)
 canvas.place(x=0, y=0)
 
-# ✅ Solid sky blue background
 draw_gradient(canvas, "#87CEEB", "#87CEEB")
 
-# --- Card frame ---
 card = tk.Frame(root, bg="#fff", bd=0, relief="ridge", highlightbackground="#3b82f6", highlightthickness=2)
 card.place(relx=0.5, rely=0.5, anchor="center", width=420, height=400)
 
@@ -199,11 +203,27 @@ def show_registration():
         values = [var.get().strip() for _, var in fields]
         floor = int(floor_var.get())
         seater = seater_var.get()
+        email = values[1]
+
         if any(not v for v in values):
             messagebox.showerror("Error", "All fields are required.")
             return
-        if values[1] == "0111":
+        if email == "0111":
             messagebox.showerror("Error", "Admin ID cannot be registered here.")
+            return
+
+        # --- Seater occupancy validation ---
+        cur.execute('''
+            SELECT COUNT(*) FROM users WHERE floor=? AND seater=?
+        ''', (floor, seater))
+        count = cur.fetchone()[0]
+
+        max_allowed = {"Single": 1, "Double": 2, "Triple": 3}[seater]
+        if count >= max_allowed:
+            messagebox.showerror(
+                "Error",
+                f"{seater} seater on Floor {floor} is already fully occupied."
+            )
             return
 
         try:
