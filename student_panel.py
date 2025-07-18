@@ -62,7 +62,6 @@ tk.Label(main_frame, text=welcome_text, font=("Segoe UI", 14, "bold"), fg="#3341
 # === Features ===
 
 def view_room():
-    # Get student's floor and seater
     cur.execute("SELECT floor, seater FROM users WHERE email=?", (student_email,))
     result = cur.fetchone()
     if not result:
@@ -132,7 +131,6 @@ def view_complaints():
     win.geometry("400x350")
     win.configure(bg="#e0e7ef")
     tk.Label(win, text="Your Complaints", font=("Segoe UI", 14, "bold"), bg="#e0e7ef", fg="#2563eb").pack(pady=10)
-    # If 'viewed' column doesn't exist, complaints will always show as unviewed
     try:
         cur.execute("ALTER TABLE complaints ADD COLUMN viewed INTEGER DEFAULT 0")
     except sqlite3.OperationalError:
@@ -158,6 +156,12 @@ def view_leaves():
     for idx, (reason, status) in enumerate(leaves):
         tk.Label(win, text=f"{idx+1}. {reason} [{status}]", bg="#e0e7ef", fg="#2563eb", anchor="w").pack(fill="x", padx=10, pady=2)
 
+# === Logout with Confirmation ===
+def logout():
+    confirm = messagebox.askyesno("Confirm Logout", "Are you sure you want to logout?")
+    if confirm:
+        root.destroy()
+
 # === Buttons ===
 btn_frame = tk.Frame(main_frame, bg="#fff")
 btn_frame.pack(pady=20)
@@ -167,6 +171,6 @@ tk.Button(btn_frame, text="View Leave Requests", width=22, height=2, bg="#3498db
 tk.Button(btn_frame, text="Make Complaint", width=22, height=2, bg="#e67e22", fg="white", font=("Segoe UI", 11, "bold"), command=make_complaint).pack(pady=7, fill="x")
 tk.Button(btn_frame, text="Request Leave", width=22, height=2, bg="#2ecc71", fg="white", font=("Segoe UI", 11, "bold"), command=request_leave).pack(pady=7, fill="x")
 tk.Button(btn_frame, text="View Room", width=22, height=2, bg="#2980b9", fg="white", font=("Segoe UI", 11, "bold"), command=view_room).pack(pady=7, fill="x")
-tk.Button(main_frame, text="Logout", width=10, height=1, bg="#c0392b", fg="white", font=("Segoe UI", 11, "bold"), command=root.destroy).pack(pady=20)
+tk.Button(main_frame, text="Logout", width=10, height=1, bg="#c0392b", fg="white", font=("Segoe UI", 11, "bold"), command=logout).pack(pady=20)
 
 root.mainloop()

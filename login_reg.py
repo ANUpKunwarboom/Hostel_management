@@ -63,18 +63,18 @@ def draw_gradient(canvas, color1, color2):
 
 canvas = tk.Canvas(root, width=screen_width, height=screen_height, highlightthickness=0)
 canvas.place(x=0, y=0)
+
+# ✅ Solid sky blue background
 draw_gradient(canvas, "#87CEEB", "#87CEEB")
 
-# --- Card Frame ---
+# --- Card frame ---
 card = tk.Frame(root, bg="#fff", bd=0, relief="ridge", highlightbackground="#3b82f6", highlightthickness=2)
 card.place(relx=0.5, rely=0.5, anchor="center", width=420, height=400)
 
-# --- Show Login Panel ---
 def show_login():
     card.place_configure(height=400)
     for widget in card.winfo_children():
         widget.destroy()
-
     tk.Label(card, text="Hostel Management", font=("Segoe UI", 15, "bold"), fg="#2563eb", bg="#fff").pack(pady=(18, 2))
     tk.Label(card, text="Login", font=("Segoe UI", 12, "bold"), fg="#334155", bg="#fff").pack(pady=(0, 10))
 
@@ -143,7 +143,6 @@ def show_login():
     tk.Label(card, text="Don't have an account?", fg="#64748b", bg="#fff", font=("Segoe UI", 9)).pack(pady=(10,2))
     tk.Button(card, text="Register", command=show_registration, bg="#fff", fg="#2563eb", font=("Segoe UI", 10, "bold"), bd=1, relief="solid", width=13, height=1, activebackground="#f1f5f9").pack()
 
-# --- Show Registration Panel ---
 def show_registration():
     card.place_configure(height=850)
     for widget in card.winfo_children():
@@ -211,12 +210,8 @@ def show_registration():
             cur.execute('''INSERT INTO users (name, email, phone, parent_name, parent_phone, course, password, seater, floor)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', tuple(values + [seater, floor]))
             conn.commit()
-            confirm = messagebox.askyesno("Success", "Registration successful!\nDo you want to login now?")
-            if confirm:
-                show_login()
-            else:
-                card.place_configure(height=400)
-                show_login()
+            messagebox.showinfo("Success", f"Registration successful!")
+            show_login()
         except sqlite3.IntegrityError:
             messagebox.showerror("Error", "This email is already registered.")
 
